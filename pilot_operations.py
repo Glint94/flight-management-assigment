@@ -1,4 +1,36 @@
 import sqlite3
+from database_setup import connect_to_database
+
+def show_available_pilots():
+    database = connect_to_database()
+    cursor = database.cursor()
+
+    cursor.execute('''
+                    SELECT license_number, name
+                    FROM pilots
+                    ORDER BY license_number
+    ''')
+
+    print("\nAvailable Pilots")
+
+    for pilots in cursor.fetchall():
+
+        print(
+            f"{pilots[0]} - {pilots[1]}"
+        )   
+
+def get_pilot_id(license_number):
+        database = connect_to_database()
+        cursor = database.cursor()
+
+        cursor.execute('''SELECT pilot_id FROM pilots WHERE license_number = ?''', (license_number,))
+        pilot = cursor.fetchone()
+        database.close()
+
+        if pilot is None:
+           return False
+        else:
+            return pilot[0]
 
 def add_new_pilot():
     print("Add New Pilot")
