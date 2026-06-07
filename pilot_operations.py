@@ -28,7 +28,7 @@ def get_pilot_id(license_number):
         database.close()
 
         if pilot is None:
-           return False
+           return None
         else:
             return pilot[0]
 
