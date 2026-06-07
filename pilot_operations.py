@@ -66,4 +66,4 @@ def pilot_functions():
             break
 
         else:
-            print("Invalid Option, try again.")
+            print("Invalid option, try again.")

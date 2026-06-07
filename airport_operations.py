@@ -1,4 +1,39 @@
 import sqlite3
+import tabulate
+from database_setup import connect_to_database
+
+
+def get_airport_id(airport_code):
+        database = connect_to_database()
+        cursor = database.cursor()
+
+        cursor.execute('''SELECT airport_id FROM airports WHERE airport_code = ?''', (airport_code,))
+        airport = cursor.fetchone()
+        database.close()
+
+        if airport is None:
+           return None
+        else:
+            return airport[0]
+        
+def show_available_airports():
+
+    database = connect_to_database()
+    cursor = database.cursor()
+
+    cursor.execute('''
+                    SELECT airport_code, airport_name
+                    FROM airports
+                    ORDER BY airport_code
+    ''')
+
+    print("\nAvailable Airports")
+
+    for airport in cursor.fetchall():
+
+        print(
+            f"{airport[0]} - {airport[1]}"
+        )   
 
 def add_new_airport():
     print("Add New Airport")
@@ -34,4 +69,4 @@ def airport_functions():
             break
 
         else:
-            print("Invalid Option, try again.")
+            print("Invalid option, try again.")
