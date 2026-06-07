@@ -39,4 +39,5 @@ def main_menu_options():
             print("Invalid option, please try again.")
             print_main_menu()
 
+#Starts the program by entering the main menu.
 main_menu_options()

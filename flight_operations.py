@@ -4,14 +4,18 @@ from database_setup import connect_to_database
 from pilot_operations import show_available_pilots, get_pilot_id
 from airport_operations import show_available_airports, get_airport_id
 
+# Function to fetch a flight_id using a flight number, more user friendly than asking for flight_id as input.
 def get_flight_id(flight_number):
         database = connect_to_database()
         cursor = database.cursor()
 
+        # SQL statement gets the flight_id of the first flight with a matching flight number. TODO: Improve functionality to
+        # deal with cases where there are multiple flights with the same flight number.
         cursor.execute('''SELECT flight_id FROM flights WHERE flight_number = ?''', (flight_number,))
         flight = cursor.fetchone()
         database.close()
 
+        #Return None if there are no flights with a matching flight number, otherwise return the flight.
         if flight is None:
            return None
         else:
@@ -100,10 +104,13 @@ def add_new_flight():
             if database is not None:
                 database.close()
 
+# Function to output all flights in a table.
 def view_all_flights():
     database = connect_to_database()
     cursor = database.cursor()
 
+    # SQL statement to output all flights in table format. Uses joins to display the airport codes, airport names, and pilot names
+    # rather than the less user friendly ID numbers that would have to be used if we just used the flights table.
     cursor.execute('''
                 SELECT
                     flights.flight_number,
@@ -121,6 +128,7 @@ def view_all_flights():
                    ORDER BY flights.departure_datetime
     ''')
 
+    # Display the retrieved data in a formatted table.
     flights = cursor.fetchall()
 
     headers = ["Flight Number", "Origin Airport Code", "Origin Airport Name", "Destination Airport Code",
@@ -460,21 +468,27 @@ def update_flight_menu():
         else:
             print("Invalid option, try again.")
 
+# Assigns a pilot to a flight.
 def assign_pilot_to_flight():
     database = None
 
+    # Select the flight that needs changing
     try:
         flight_number = input("Flight Number: ")
         flight_id = get_flight_id(flight_number)
 
+        # Validate input flight number.
         if flight_id is None:
             print("Invalid Flight Number")
             return
 
+        # List all available pilots for ease of use.
         show_available_pilots()
+        # Take license number of new pilot.
         new_pilot_license_number = input("New Pilot License Number: ")
         pilot_id = get_pilot_id(new_pilot_license_number)
 
+        # Validate input pilot license number.
         if pilot_id is None:
             print("Invalid Pilot License Number")
             return
@@ -482,24 +496,30 @@ def assign_pilot_to_flight():
         database = connect_to_database()
         cursor = database.cursor()
 
+        # SQL Statement to assign the selected pilot to the selected flight.
         cursor.execute('''
                     UPDATE flights SET pilot_id = ? WHERE flight_id = ?''', (pilot_id, flight_id)
                     )
-        
+
+        # Commit the change to the database.        
         database.commit()
 
+        # Back-up error catching, will print error message if input does not match any existing flight numbers.
         if cursor.rowcount == 0:
             print("Invalid flight number.")
         else:
             print("Pilot assigned successfully.")
 
-    except sqlite3.IntegrityError:
-        print("Origin and Destination Airports cannot be the same.")
+    #Print error message if database integrity error is thrown.
+    except sqlite3.IntegrityError as error:
+        print(f"Database Error: {error}")
         
+    # If a connection was made to the database, close it now that operations are finished.
     finally:
         if database is not None:
             database.close()
 
+# Displays the main Flights menu and takes input to select an option.
 def flight_functions():
 
     while True:
