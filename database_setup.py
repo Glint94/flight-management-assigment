@@ -49,8 +49,8 @@ def create_tables():
                         arrival_datetime TEXT NOT NULL,
                         status TEXT NOT NULL DEFAULT "scheduled",
                         CHECK (origin_id <> destination_id),
-                        CHECK (datetime(arrival_datetime) > datetime(departure_datetime))
-                        CHECK status IN ("scheduled", "delayed", "completed", "cancelled")
+                        CHECK (datetime(arrival_datetime) > datetime(departure_datetime)),
+                        CHECK (status IN ("scheduled", "delayed", "completed", "cancelled"))
                     );
     ''')
 

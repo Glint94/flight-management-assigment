@@ -36,10 +36,61 @@ def show_available_airports():
         )   
 
 def add_new_airport():
-    print("Add New Airport")
+    database = None
 
-def view_airports_menu():
-    print("View Airports")
+    try:
+        airport_code = input("Airport Code: ").upper()
+
+        airport_name = input("Airport Name: ")
+
+        city = input("City: ")
+
+        country = input("Country: ")
+
+        database = connect_to_database()
+        cursor = database.cursor()
+
+        cursor.execute('''
+                    INSERT INTO airports (
+                        airport_code,
+                        airport_name,
+                        city,
+                        country
+                       ) 
+                       VALUES (?, ?, ?, ?)''',
+                       (
+                           airport_code,
+                           airport_name,
+                           city,
+                           country
+                       )
+        )
+
+        database.commit()
+
+        print("Airport added successfully.")
+
+    except sqlite3.IntegrityError:
+        print("Airport code already exists.")
+
+    finally:
+        if database is not None:
+            database.close()
+
+def view_all_airports():
+    database = connect_to_database()
+    cursor = database.cursor()
+
+    cursor.execute('''SELECT * FROM airports ORDER BY airport_code''')
+
+    airports = cursor.fetchall()
+
+    headers = ["Airport Code", "Airport Name", "City", "Country"]
+
+    print(tabulate.tabulate(airports, headers = headers, tablefmt="grid"))
+
+    database.close()
+
 
 def update_airport_menu():
     print("Update Airports")
@@ -60,7 +111,7 @@ def airport_functions():
             add_new_airport()
 
         elif choice == "2":
-            view_airports_menu()
+            view_all_airports()
 
         elif choice == "3":
             update_airport_menu()
