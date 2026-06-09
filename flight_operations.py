@@ -177,7 +177,7 @@ def search_flight_number():
     database.close()
 
 def search_flight_status():
-    status = input("Enter Status: ")
+    status = input("Enter Status: ").lower()
 
     database = connect_to_database()
     cursor = database.cursor()
