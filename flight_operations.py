@@ -484,7 +484,7 @@ def assign_pilot_to_flight():
         # List all available pilots for ease of use.
         show_available_pilots()
         # Take license number of new pilot.
-        new_pilot_license_number = input("New Pilot License Number: ")
+        new_pilot_license_number = input("New Pilot License Number: ").upper()
         pilot_id = get_pilot_id(new_pilot_license_number)
 
         # Validate input pilot license number.
