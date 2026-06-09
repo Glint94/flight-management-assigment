@@ -38,9 +38,8 @@ def add_new_flight():
             print("Invalid airport code.")
             return
 
-        # Display list of available airports then take airport code as input and perform validation. Convert airport
+        # Take airport code as input and perform validation. Convert airport
         # code to airport_id for use in SQL later.
-        show_available_airports()
         destination_code = input("Destination Airport Code: ").upper()
         destination_id = get_airport_id(destination_code)
         if destination_id is None:
