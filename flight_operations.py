@@ -49,7 +49,7 @@ def add_new_flight():
         # Display list of all pilots, take pilot license number as input and perform validation. Convert to pilot_id
         # for use in SQL later.
         show_available_pilots()
-        license_number = input("Pilot License Number: ")
+        license_number = input("Pilot License Number: ").upper()
         pilot_id = get_pilot_id(license_number)
         if pilot_id is None:
             print("Invalid Pilot License Number")
